@@ -1,0 +1,13 @@
+[package]
+name = "nav-attitude"
+version = "0.1.0"
+edition.workspace = true
+licence.workspace = true
+
+[dependencies]
+nalgebra = { workspace = true }
+thiserror = { workspace = true }
+approx = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
