@@ -23,8 +23,8 @@
 //! crate propagates quaternions and treats Euler angles as a display
 //! and specification format only.
 
-use nalgebra::Vector3;
 use crate::{dcm::Dcm, quat::UnitQuat};
+use nalgebra::Vector3;
 
 /// Gate for the gimbal-lock branch of [`Euler321::from_dcm`], applied
 /// to |sinθ|.
@@ -45,20 +45,20 @@ const GIMBAL_LOCK_EPS: f64 = 1e-9;
 /// `out_of_range_angles_same_rotation` test).
 #[derive(Debug, Clone, Copy)]
 pub struct Euler321 {
-    pub yaw: f64,			// (-π,π]
-    pub pitch: f64,			// [-π/2, π/2]
-    pub roll: f64,			// (-π,π]
+    pub yaw: f64,   // (-π,π]
+    pub pitch: f64, // [-π/2, π/2]
+    pub roll: f64,  // (-π,π]
 }
 
 impl Euler321 {
     /// Bundles three angles. No validation or normalization — see the
     /// struct docs for range semantics.
     pub fn new(
-	yaw: f64,			// (-π,π]
-	pitch: f64,			// [-π/2, π/2]
-	roll: f64,			// (-π,π]
+        yaw: f64,   // (-π,π]
+        pitch: f64, // [-π/2, π/2]
+        roll: f64,  // (-π,π]
     ) -> Self {
-	Self { yaw, pitch, roll }
+        Self { yaw, pitch, roll }
     }
 }
 
@@ -72,16 +72,16 @@ impl Euler321 {
     /// (`closed_form_dcm` below), where a slip costs a red test
     /// instead of a wrong answer.
     pub fn to_quat(&self) -> UnitQuat {
-	let qx = UnitQuat::from_axis_angle(Vector3::x_axis(), self.roll);
-	let qy = UnitQuat::from_axis_angle(Vector3::y_axis(), self.pitch);
-	let qz = UnitQuat::from_axis_angle(Vector3::z_axis(), self.yaw);
-	qz.compose(&qy.compose(&qx))
+        let qx = UnitQuat::from_axis_angle(Vector3::x_axis(), self.roll);
+        let qy = UnitQuat::from_axis_angle(Vector3::y_axis(), self.pitch);
+        let qz = UnitQuat::from_axis_angle(Vector3::z_axis(), self.yaw);
+        qz.compose(&qy.compose(&qx))
     }
 
     /// The DCM of this attitude, routed through the quaternion — the
     /// crate's privileged chart.
     pub fn to_dcm(&self) -> Dcm {
-	self.to_quat().to_dcm()
+        self.to_quat().to_dcm()
     }
 
     /// Extraction from a DCM, with the gimbal lock under contract.
@@ -100,33 +100,32 @@ impl Euler321 {
     /// same difference (resp. sum) extracts to the identical result —
     /// the `lock_gauge_*` tests state this as executable fact.
     pub fn from_dcm(dcm: &Dcm) -> Self {
-	use std::f64::consts::FRAC_PI_2;
-	let m = dcm.matrix();
-	let s = (-m.m31).clamp(-1.0, 1.0);
-	let c = m.m11.hypot(m.m21);
+        use std::f64::consts::FRAC_PI_2;
+        let m = dcm.matrix();
+        let s = (-m.m31).clamp(-1.0, 1.0);
+        let c = m.m11.hypot(m.m21);
 
-	if c > GIMBAL_LOCK_EPS {
-	    Euler321 {
-		yaw: m.m21.atan2(m.m11),
-		pitch: s.asin(),
-		roll: m.m32.atan2(m.m33)
-	    }
-	} else {
-	    let yaw = if s > 0.0 {
-		(-m.m12).atan2(m.m13)
-	    } else {
-		(-m.m12).atan2(-m.m13)
-	    };
-	    let pitch = FRAC_PI_2.copysign(s);
-	    Euler321::new(yaw, pitch, 0.0)
-	}
+        if c > GIMBAL_LOCK_EPS {
+            Euler321 {
+                yaw: m.m21.atan2(m.m11),
+                pitch: s.asin(),
+                roll: m.m32.atan2(m.m33),
+            }
+        } else {
+            let yaw = if s > 0.0 {
+                (-m.m12).atan2(m.m13)
+            } else {
+                (-m.m12).atan2(-m.m13)
+            };
+            let pitch = FRAC_PI_2.copysign(s);
+            Euler321::new(yaw, pitch, 0.0)
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::quat::UnitQuat;
     use approx::relative_eq;
     use nalgebra::{Matrix3, Vector3};
     use proptest::prelude::*;
@@ -152,9 +151,15 @@ mod tests {
         let (sp, cp) = e.pitch.sin_cos();
         let (sr, cr) = e.roll.sin_cos();
         Matrix3::new(
-            cy * cp,  -sy * cr + cy * sp * sr,   sy * sr + cy * sp * cr,
-            sy * cp,   cy * cr + sy * sp * sr,  -cy * sr + sy * sp * cr,
-            -sp,       cp * sr,                  cp * cr,
+            cy * cp,
+            -sy * cr + cy * sp * sr,
+            sy * sr + cy * sp * cr,
+            sy * cp,
+            cy * cr + sy * sp * sr,
+            -cy * sr + sy * sp * cr,
+            -sp,
+            cp * sr,
+            cp * cr,
         )
     }
 
@@ -204,13 +209,25 @@ mod tests {
     #[test]
     fn single_axis_anchors() {
         let yaw90 = Euler321::new(FRAC_PI_2, 0.0, 0.0).to_dcm();
-        assert!(relative_eq!(yaw90.transform(Vector3::x()), Vector3::y(), epsilon = 1e-12));
+        assert!(relative_eq!(
+            yaw90.transform(Vector3::x()),
+            Vector3::y(),
+            epsilon = 1e-12
+        ));
 
         let pitch90 = Euler321::new(0.0, FRAC_PI_2, 0.0).to_dcm();
-        assert!(relative_eq!(pitch90.transform(Vector3::x()), -Vector3::z(), epsilon = 1e-12));
+        assert!(relative_eq!(
+            pitch90.transform(Vector3::x()),
+            -Vector3::z(),
+            epsilon = 1e-12
+        ));
 
         let roll90 = Euler321::new(0.0, 0.0, FRAC_PI_2).to_dcm();
-        assert!(relative_eq!(roll90.transform(Vector3::y()), Vector3::z(), epsilon = 1e-12));
+        assert!(relative_eq!(
+            roll90.transform(Vector3::y()),
+            Vector3::z(),
+            epsilon = 1e-12
+        ));
     }
 
     // ---------------- round trips ----------------
@@ -260,7 +277,11 @@ mod tests {
         for (yaw, roll) in pairs {
             let e = Euler321::new(yaw, FRAC_PI_2, roll);
             let got = Euler321::from_dcm(&e.to_dcm());
-            assert!(angle_eq(got.yaw, 0.5, 1e-9), "yaw gauge: ψ−φ=0.5, got {}", got.yaw);
+            assert!(
+                angle_eq(got.yaw, 0.5, 1e-9),
+                "yaw gauge: ψ−φ=0.5, got {}",
+                got.yaw
+            );
             assert!(angle_eq(got.pitch, FRAC_PI_2, 1e-9));
             assert!(angle_eq(got.roll, 0.0, 1e-9));
             assert!(e.to_quat().approx_eq_rotation(&got.to_quat(), 1e-11));
@@ -274,7 +295,11 @@ mod tests {
         for (yaw, roll) in pairs {
             let e = Euler321::new(yaw, -FRAC_PI_2, roll);
             let got = Euler321::from_dcm(&e.to_dcm());
-            assert!(angle_eq(got.yaw, 0.5, 1e-9), "yaw gauge: ψ+φ=0.5, got {}", got.yaw);
+            assert!(
+                angle_eq(got.yaw, 0.5, 1e-9),
+                "yaw gauge: ψ+φ=0.5, got {}",
+                got.yaw
+            );
             assert!(angle_eq(got.pitch, -FRAC_PI_2, 1e-9));
             assert!(angle_eq(got.roll, 0.0, 1e-9));
             assert!(e.to_quat().approx_eq_rotation(&got.to_quat(), 1e-11));

@@ -69,23 +69,23 @@ impl RotVec {
     /// Wraps a vector as so(3) coordinates. No constraints: every finite
     /// vector is a valid algebra element.
     pub fn new(v: Vector3<f64>) -> Self {
-	Self(v)
+        Self(v)
     }
 
     /// The underlying coordinates (a copy).
     pub fn to_vector(&self) -> Vector3<f64> {
-	self.0
+        self.0
     }
 
     /// The underlying coordinates (a copy).
     pub fn vector(&self) -> &Vector3<f64> {
-	&self.0
+        &self.0
     }
 
     /// The rotation angle θ = |φ|, in radians. Always ≥ 0; the axis
     /// carries the sign.
     pub fn angle(&self) -> f64 {
-	self.0.norm()
+        self.0.norm()
     }
 }
 
@@ -113,24 +113,25 @@ impl RotVec {
     /// The result satisfies `Dcm`'s SO(3) trust contract by
     /// construction, up to rounding.
     pub fn exp(&self) -> Dcm {
-	use crate::numerics::hat;
+        use crate::numerics::hat;
 
-	let theta = self.angle();
-	
+        let theta = self.angle();
 
-	let (a, b) = if theta < SMALL_ANGLE_EPS {
-	    rodrigues_coeffs(theta * theta)
-	} else {
-	    let half_sin = (0.5 * theta).sin();
-	    (theta.sin() / theta,
-	     2.0 * half_sin * half_sin / (theta * theta))
-	};
+        let (a, b) = if theta < SMALL_ANGLE_EPS {
+            rodrigues_coeffs(theta * theta)
+        } else {
+            let half_sin = (0.5 * theta).sin();
+            (
+                theta.sin() / theta,
+                2.0 * half_sin * half_sin / (theta * theta),
+            )
+        };
 
-	let phi = self.to_vector();
-	let phi_hat = hat(&phi);
+        let phi = self.to_vector();
+        let phi_hat = hat(&phi);
 
-	let r = Matrix3::identity() + a * phi_hat + b * phi_hat * phi_hat;
-	Dcm::new(r)
+        let r = Matrix3::identity() + a * phi_hat + b * phi_hat * phi_hat;
+        Dcm::new(r)
     }
 }
 
@@ -148,7 +149,7 @@ impl RotVec {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::numerics::{hat, vee, SMALL_ANGLE_EPS};
+    use crate::numerics::{SMALL_ANGLE_EPS, hat, vee};
     use crate::quat::UnitQuat;
     use approx::relative_eq;
     use nalgebra::{Matrix3, Unit, Vector3};
@@ -290,7 +291,7 @@ mod tests {
         ] {
             let (a_series, b_series) = rodrigues_coeffs(theta * theta);
             let a_exact = theta.sin() / theta;
-	    let half_sin = (0.5 * theta).sin();
+            let half_sin = (0.5 * theta).sin();
             let b_exact = 2.0 * half_sin * half_sin / (theta * theta);
 
             assert!(
@@ -319,9 +320,21 @@ mod tests {
             );
         }
         let r = RotVec::new(Vector3::x() * PI).exp();
-        assert!(relative_eq!(r.transform(Vector3::x()), Vector3::x(), epsilon = 1e-12));
-        assert!(relative_eq!(r.transform(Vector3::y()), -Vector3::y(), epsilon = 1e-12));
-        assert!(relative_eq!(r.transform(Vector3::z()), -Vector3::z(), epsilon = 1e-12));
+        assert!(relative_eq!(
+            r.transform(Vector3::x()),
+            Vector3::x(),
+            epsilon = 1e-12
+        ));
+        assert!(relative_eq!(
+            r.transform(Vector3::y()),
+            -Vector3::y(),
+            epsilon = 1e-12
+        ));
+        assert!(relative_eq!(
+            r.transform(Vector3::z()),
+            -Vector3::z(),
+            epsilon = 1e-12
+        ));
     }
 
     // ---------------- the Lie-theoretic signature moves ----------------
@@ -356,13 +369,23 @@ mod tests {
     fn rotation_vectors_do_not_add() {
         let a = Vector3::x() * 0.01;
         let b = Vector3::y() * 0.01;
-        let z = RotVec::new(a).exp().compose(&RotVec::new(b).exp()).log().to_vector();
+        let z = RotVec::new(a)
+            .exp()
+            .compose(&RotVec::new(b).exp())
+            .log()
+            .to_vector();
 
         let naive_err = (z - (a + b)).norm();
         let bch2_err = (z - (a + b + 0.5 * a.cross(&b))).norm();
 
-        assert!(naive_err > 4e-5, "naive sum unexpectedly good: {naive_err:e}");
-        assert!(bch2_err < 5e-6, "second-order BCH unexpectedly bad: {bch2_err:e}");
+        assert!(
+            naive_err > 4e-5,
+            "naive sum unexpectedly good: {naive_err:e}"
+        );
+        assert!(
+            bch2_err < 5e-6,
+            "second-order BCH unexpectedly bad: {bch2_err:e}"
+        );
     }
 
     // ---------------- why log routes through the quaternion ----------------

@@ -4,7 +4,7 @@ members = ["crates/*"]
 
 [workspace.package]
 edition = "2024"
-licence = "MIT"
+license = "MIT"
 
 [workspace.dependencies]
 nalgebra = "0.35"

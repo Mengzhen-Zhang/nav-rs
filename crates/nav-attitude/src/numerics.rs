@@ -1,6 +1,4 @@
-use nalgebra::{Matrix3, Vector3, Unit};
-
-use crate::{dcm::Dcm, euler::Euler321};
+use nalgebra::{Matrix3, Vector3};
 
 /// Shared branch point for every small-angle Taylor series in the
 /// crate: θ/sin(θ/2) in `UnitQuat::to_rotvec`, sin(θ/2)/θ in
@@ -15,13 +13,10 @@ use crate::{dcm::Dcm, euler::Euler321};
 pub(crate) const SMALL_ANGLE_EPS: f64 = 1e-6;
 
 pub(crate) fn hat(v: &Vector3<f64>) -> Matrix3<f64> {
-    Matrix3::new(
-	0.0, -v.z, v.y,
-	v.z, 0.0, -v.x,
-	-v.y, v.x, 0.0
-    )
+    Matrix3::new(0.0, -v.z, v.y, v.z, 0.0, -v.x, -v.y, v.x, 0.0)
 }
 
+#[cfg(test)]
 pub(crate) fn vee(mat: &Matrix3<f64>) -> Vector3<f64> {
     let x = mat.m32 - mat.m23;
     let y = mat.m13 - mat.m31;

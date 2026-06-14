@@ -34,11 +34,11 @@ impl Dcm {
     /// method silently wrong — when in doubt, gate on
     /// [`Dcm::is_orthonormal`] first.
     pub fn new(dcm: Matrix3<f64>) -> Self {
-	Self(dcm)
+        Self(dcm)
     }
 
     pub fn matrix(&self) -> &Matrix3<f64> {
-	&self.0
+        &self.0
     }
 }
 
@@ -48,21 +48,21 @@ impl Dcm {
     /// Agrees with `UnitQuat::transform` of the corresponding quaternion;
     /// pinned by the `action_agreement` property test.
     pub fn transform(&self, v: Vector3<f64>) -> Vector3<f64> {
-	self.0 * v
+        self.0 * v
     }
 
     /// Composition `self · other`: applies `other` first, then `self` —
     /// the same order contract as `UnitQuat::compose`, so conversions
     /// commute with composition (the `homomorphism` property test).
     pub fn compose(&self, other: &Self) -> Self {
-	Self(self.0 * other.0)
+        Self(self.0 * other.0)
     }
 
     /// The transpose — which on SO(3) **is** the inverse, since
     /// orthonormality means `RᵀR = I`. This is why inverting a DCM is
     /// free of arithmetic beyond a relabeling.
     pub fn transpose(&self) -> Self {
-	Self(self.0.transpose())
+        Self(self.0.transpose())
     }
 
     /// Membership test for SO(3) within tolerance.
@@ -75,8 +75,11 @@ impl Dcm {
     /// matrices produced by composing valid rotations, defects sit near
     /// machine epsilon, so `1e-9` is a generous gate.
     pub fn is_orthonormal(&self, tol: f64) -> bool {
-	(self.0.transpose() * self.0 - Matrix3::identity()).abs().max() < tol
-        && self.0.determinant() > 0.0
+        (self.0.transpose() * self.0 - Matrix3::identity())
+            .abs()
+            .max()
+            < tol
+            && self.0.determinant() > 0.0
     }
 
     /// Quaternion of the same rotation, via **Shepperd's method**.
@@ -109,42 +112,42 @@ impl Dcm {
     ///
     /// Reference: S. W. Shepperd, *J. Guidance and Control* 1(3), 1978.
     pub fn to_quat(&self) -> crate::quat::UnitQuat {
-	let t = self.0.trace();
-	let r11 = self.0.m11;
-	let r22 = self.0.m22;
-	let r33 = self.0.m33;
-	let r12 = self.0.m12;
-	let r13 = self.0.m13;
-	let r21 = self.0.m21;
-	let r23 = self.0.m23;
-	let r31 = self.0.m31;
-	let r32 = self.0.m32;
-	
-	if t >= r11.max(r22).max(r33) {
-	    let w = (1.0 + t).sqrt() * 0.5;
-	    let x = (r32 - r23) / w * 0.25;
-	    let y = (r13 - r31) / w * 0.25;
-	    let z = (r21 - r12) / w * 0.25;
-	    crate::quat::UnitQuat::new(w, x, y, z)
-	} else if r11 >= t.max(r22).max(r33) {
-	    let x = (1.0 + 2.0*r11 - t).sqrt() * 0.5;
-	    let y = (r21 + r12) / x * 0.25;
-	    let z = (r13 + r31) / x * 0.25;
-	    let w = (r32 - r23) / x * 0.25;
-	    crate::quat::UnitQuat::new(w, x, y, z)
-	} else if r22 >= t.max(r11).max(r33) {
-	    let y = (1.0 + 2.0*r22 - t).sqrt() * 0.5;
-	    let x = (r21 + r12) / y * 0.25;
-	    let z = (r32 + r23) / y * 0.25;
-	    let w = (r13 - r31) / y * 0.25;
-	    crate::quat::UnitQuat::new(w, x, y, z)
-	} else {
-	    let z = (1.0 + 2.0*r33 - t).sqrt() * 0.5;
-	    let x = (r13 + r31) / z * 0.25;
-	    let y = (r32 + r23) / z * 0.25;
-	    let w = (r21 - r12) / z * 0.25;
-	    crate::quat::UnitQuat::new(w, x, y, z)
-	}
+        let t = self.0.trace();
+        let r11 = self.0.m11;
+        let r22 = self.0.m22;
+        let r33 = self.0.m33;
+        let r12 = self.0.m12;
+        let r13 = self.0.m13;
+        let r21 = self.0.m21;
+        let r23 = self.0.m23;
+        let r31 = self.0.m31;
+        let r32 = self.0.m32;
+
+        if t >= r11.max(r22).max(r33) {
+            let w = (1.0 + t).sqrt() * 0.5;
+            let x = (r32 - r23) / w * 0.25;
+            let y = (r13 - r31) / w * 0.25;
+            let z = (r21 - r12) / w * 0.25;
+            crate::quat::UnitQuat::new(w, x, y, z)
+        } else if r11 >= t.max(r22).max(r33) {
+            let x = (1.0 + 2.0 * r11 - t).sqrt() * 0.5;
+            let y = (r21 + r12) / x * 0.25;
+            let z = (r13 + r31) / x * 0.25;
+            let w = (r32 - r23) / x * 0.25;
+            crate::quat::UnitQuat::new(w, x, y, z)
+        } else if r22 >= t.max(r11).max(r33) {
+            let y = (1.0 + 2.0 * r22 - t).sqrt() * 0.5;
+            let x = (r21 + r12) / y * 0.25;
+            let z = (r32 + r23) / y * 0.25;
+            let w = (r13 - r31) / y * 0.25;
+            crate::quat::UnitQuat::new(w, x, y, z)
+        } else {
+            let z = (1.0 + 2.0 * r33 - t).sqrt() * 0.5;
+            let x = (r13 + r31) / z * 0.25;
+            let y = (r32 + r23) / z * 0.25;
+            let w = (r21 - r12) / z * 0.25;
+            crate::quat::UnitQuat::new(w, x, y, z)
+        }
     }
 
     /// Rotation vector (so(3) coordinates) of this rotation — the inverse
@@ -158,7 +161,7 @@ impl Dcm {
     /// sinθ and collapses near π; see rotvec's
     /// `naive_log_degrades_near_pi_quat_path_does_not` for the comparison.
     pub fn log(&self) -> RotVec {
-	self.to_quat().to_rotvec()
+        self.to_quat().to_rotvec()
     }
 }
 
@@ -179,8 +182,7 @@ mod tests {
             "axis too short to normalize",
             |(a, angle)| {
                 let v = Vector3::from(a);
-                (v.norm() > 1e-3)
-                    .then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
+                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
             },
         )
     }
@@ -196,8 +198,7 @@ mod tests {
             .prop_filter_map("axis too short to normalize", |(a, angle, neg)| {
                 let v = Vector3::from(a);
                 let angle = if neg { -angle } else { angle };
-                (v.norm() > 1e-3)
-                    .then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
+                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
             })
     }
 
@@ -311,18 +312,10 @@ mod tests {
     /// clause) and orthonormal reflections (determinant clause).
     #[test]
     fn is_orthonormal_rejects_non_rotations() {
-        let shear = Dcm::new(Matrix3::new(
-            1.0, 5.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0,
-        )); // det = 1, not orthogonal
+        let shear = Dcm::new(Matrix3::new(1.0, 5.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)); // det = 1, not orthogonal
         assert!(!shear.is_orthonormal(1e-9));
 
-        let reflection = Dcm::new(Matrix3::new(
-            1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, -1.0,
-        )); // orthonormal, det = −1
+        let reflection = Dcm::new(Matrix3::new(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -1.0)); // orthonormal, det = −1
         assert!(!reflection.is_orthonormal(1e-9));
 
         let rotation = UnitQuat::from_axis_angle(Vector3::z_axis(), 0.3).to_dcm();

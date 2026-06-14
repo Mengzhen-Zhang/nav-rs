@@ -14,13 +14,12 @@
 //! As `dcm`, `euler`, and `rotvec` mature, the crate-wide version of this
 //! table lives in `lib.rs`; entries here are scoped to quaternions.
 
-pub mod quat;
 pub mod dcm;
 pub mod euler;
-pub mod rotvec;
 pub mod frames;
 mod numerics;
-
+pub mod quat;
+pub mod rotvec;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
