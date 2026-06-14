@@ -35,7 +35,7 @@ use nalgebra::{Matrix3, Vector3};
 use crate::{dcm::Dcm, numerics::SMALL_ANGLE_EPS};
 
 /// Taylor branches of the Rodrigues coefficients, valid for
-/// θ < [`SMALL_ANGLE_EPS`]:
+/// θ < `SMALL_ANGLE_EPS`:
 ///
 /// - `a(θ) = sinθ/θ        = 1 − θ²/6  + θ⁴/120 − O(θ⁶/5040)`
 /// - `b(θ) = (1−cosθ)/θ²   = ½ − θ²/24 + θ⁴/720 − O(θ⁶/40320)`
@@ -101,7 +101,7 @@ impl RotVec {
     ///
     /// where the 1/θ of axis normalization has been absorbed into two
     /// smooth scalar coefficients — so θ → 0 needs only a Taylor branch
-    /// ([`rodrigues_coeffs`], below [`SMALL_ANGLE_EPS`]), not a special
+    /// (`rodrigues_coeffs`, below `SMALL_ANGLE_EPS`), not a special
     /// case, and exp(0) = I falls out exactly.
     ///
     /// Numerics: in the closed-form branch, `b` is evaluated as

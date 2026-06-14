@@ -215,7 +215,7 @@ impl UnitQuat {
     /// Numerics: the scale factor θ/sin(θ/2) is evaluated with
     /// `2·atan2(s, w)/s` (well-conditioned everywhere, unlike `acos`
     /// near `|w| = 1`), switching to its Taylor series below
-    /// [`SMALL_ANGLE_EPS`]; the zero rotation maps to the zero vector.
+    /// `SMALL_ANGLE_EPS`; the zero rotation maps to the zero vector.
     pub fn to_rotvec(&self) -> crate::rotvec::RotVec {
         let w = self.0[0];
         let v = self.v();

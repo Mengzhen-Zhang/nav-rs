@@ -8,7 +8,7 @@
 //! | Sequence        | **321 intrinsic**: yaw ψ about z, pitch θ about the new y, roll φ about the newest x |
 //! | As active ops   | R(ψ,θ,φ) = **Rz(ψ)·Ry(θ)·Rx(φ)** (intrinsic steps append on the right; as a vector operator, roll acts first) |
 //! | Units / ranges  | Radians. Extraction returns the canonical box: pitch ∈ [−π/2, π/2], yaw and roll ∈ (−π, π]. Constructors accept anything (angles wrap; rotations don't) |
-//! | Gimbal lock     | Gate at \|sinθ\| > 1 − [`GIMBAL_LOCK_EPS`]; gauge choice **roll = 0**, yaw carries the observable ψ−φ (+lock) or ψ+φ (−lock) |
+//! | Gimbal lock     | Gate at \|sinθ\| > 1 − `GIMBAL_LOCK_EPS`; gauge choice **roll = 0**, yaw carries the observable ψ−φ (+lock) or ψ+φ (−lock) |
 //! | Composition     | **Deliberately absent.** Euler angles do not compose; convert to `UnitQuat`. The missing method is a design statement |
 //!
 //! # Why filters don't integrate Euler angles
