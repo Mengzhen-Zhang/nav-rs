@@ -182,7 +182,7 @@ mod tests {
             "axis too short to normalize",
             |(a, angle)| {
                 let v = Vector3::from(a);
-                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
+                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(&Unit::new_normalize(v), angle))
             },
         )
     }
@@ -198,7 +198,7 @@ mod tests {
             .prop_filter_map("axis too short to normalize", |(a, angle, neg)| {
                 let v = Vector3::from(a);
                 let angle = if neg { -angle } else { angle };
-                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(Unit::new_normalize(v), angle))
+                (v.norm() > 1e-3).then(|| UnitQuat::from_axis_angle(&Unit::new_normalize(v), angle))
             })
     }
 
@@ -284,7 +284,7 @@ mod tests {
             Vector3::z_axis(), // z-branch
         ];
         for axis in cases {
-            let q = UnitQuat::from_axis_angle(axis, PI);
+            let q = UnitQuat::from_axis_angle(&axis, PI);
             let q2 = q.to_dcm().to_quat();
             assert!(
                 q.approx_eq_rotation(&q2, 1e-12),
@@ -303,7 +303,7 @@ mod tests {
     /// anyway, which is why this test exists.
     #[test]
     fn yaw_90_sends_x_to_y() {
-        let q = UnitQuat::from_axis_angle(Vector3::z_axis(), PI / 2.0);
+        let q = UnitQuat::from_axis_angle(&Vector3::z_axis(), PI / 2.0);
         let rotated = q.to_dcm().transform(Vector3::x());
         assert!(relative_eq!(rotated, Vector3::y(), epsilon = 1e-12));
     }
@@ -318,7 +318,7 @@ mod tests {
         let reflection = Dcm::new(Matrix3::new(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -1.0)); // orthonormal, det = −1
         assert!(!reflection.is_orthonormal(1e-9));
 
-        let rotation = UnitQuat::from_axis_angle(Vector3::z_axis(), 0.3).to_dcm();
+        let rotation = UnitQuat::from_axis_angle(&Vector3::z_axis(), 0.3).to_dcm();
         assert!(rotation.is_orthonormal(1e-9));
     }
 }

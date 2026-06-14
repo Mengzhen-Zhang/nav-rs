@@ -72,9 +72,9 @@ impl Euler321 {
     /// (`closed_form_dcm` below), where a slip costs a red test
     /// instead of a wrong answer.
     pub fn to_quat(&self) -> UnitQuat {
-        let qx = UnitQuat::from_axis_angle(Vector3::x_axis(), self.roll);
-        let qy = UnitQuat::from_axis_angle(Vector3::y_axis(), self.pitch);
-        let qz = UnitQuat::from_axis_angle(Vector3::z_axis(), self.yaw);
+        let qx = UnitQuat::from_axis_angle(&Vector3::x_axis(), self.roll);
+        let qy = UnitQuat::from_axis_angle(&Vector3::y_axis(), self.pitch);
+        let qz = UnitQuat::from_axis_angle(&Vector3::z_axis(), self.yaw);
         qz.compose(&qy.compose(&qx))
     }
 

@@ -263,7 +263,7 @@ mod tests {
         #[test]
         fn from_rotvec_matches_from_axis_angle(phi in arb_phi(1e-9, PI - 1e-9)) {
             let q1 = UnitQuat::from_rotvec(RotVec::new(phi));
-            let q2 = UnitQuat::from_axis_angle(Unit::new_normalize(phi), phi.norm());
+            let q2 = UnitQuat::from_axis_angle(&Unit::new_normalize(phi), phi.norm());
             prop_assert!(q1.approx_eq_rotation(&q2, 1e-12));
         }
     }
@@ -313,7 +313,7 @@ mod tests {
         for axis in [Vector3::x_axis(), Vector3::y_axis(), Vector3::z_axis()] {
             let phi = axis.into_inner() * PI;
             let via_exp = RotVec::new(phi).exp().to_quat();
-            let oracle = UnitQuat::from_axis_angle(axis, PI);
+            let oracle = UnitQuat::from_axis_angle(&axis, PI);
             assert!(
                 via_exp.approx_eq_rotation(&oracle, 1e-11),
                 "π rotation about {axis:?} disagrees with oracle"

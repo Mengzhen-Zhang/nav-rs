@@ -11,3 +11,4 @@ approx = { workspace = true }
 
 [dev-dependencies]
 proptest = { workspace = true }
+nalgebra = { workspace = true }

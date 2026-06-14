@@ -63,7 +63,7 @@ impl UnitQuat {
     /// is accepted; the half-angle trigonometry wraps it onto the double
     /// cover (e.g. `angle = 2π` yields `-IDENTITY`, the same rotation as
     /// `IDENTITY`).
-    pub fn from_axis_angle(axis: Unit<Vector3<f64>>, angle: f64) -> Self {
+    pub fn from_axis_angle(axis: &Unit<Vector3<f64>>, angle: f64) -> Self {
         let half_angle = angle * 0.5;
         let sin = half_angle.sin();
         let cos = half_angle.cos();
@@ -326,7 +326,7 @@ mod tests {
             };
 
             let q = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis),
+        &Unit::new_normalize(axis),
         angle,
             );
 
@@ -355,7 +355,7 @@ mod tests {
             };
 
             let q = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis),
+        &Unit::new_normalize(axis),
         angle,
             );
 
@@ -393,12 +393,12 @@ mod tests {
             };
 
             let q1 = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis1),
+        &Unit::new_normalize(axis1),
         angle1,
             );
 
             let q2 = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis2),
+        &Unit::new_normalize(axis2),
         angle2,
             );
 
@@ -434,7 +434,7 @@ mod tests {
             };
 
             let q = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis),
+        &Unit::new_normalize(axis),
         angle,
             );
 
@@ -463,7 +463,7 @@ mod tests {
             };
 
             let q = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis),
+        &Unit::new_normalize(axis),
         angle,
             );
 
@@ -508,12 +508,12 @@ mod tests {
             };
 
             let q1 = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis1),
+        &Unit::new_normalize(axis1),
         angle1,
             );
 
             let q2 = UnitQuat::from_axis_angle(
-        Unit::new_normalize(axis2),
+        &Unit::new_normalize(axis2),
         angle2,
             );
 
