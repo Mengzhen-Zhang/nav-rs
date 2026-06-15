@@ -1,0 +1,16 @@
+[package]
+name = "nav-kf"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+nalgebra = { workspace = true }
+rand = "0.10.1"
+rand_distr = "0.6.0"
+statrs = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+approx = { workspace = true }
+rerun = "0.33.0"

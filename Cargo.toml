@@ -8,6 +8,7 @@ license = "MIT"
 
 [workspace.dependencies]
 nalgebra = "0.35"
+statrs = { version = "0.18.0" }
 approx = "0.5"
 proptest = "1"
 thiserror = "2"
