@@ -1,4 +1,6 @@
 /target
+# nested Cargo/rust-analyzer target dirs (e.g. crates/*/src/target)
+**/target/
 *~
 # Emacs autosave / lock files
 \#*\#
