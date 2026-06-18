@@ -6,11 +6,11 @@ license.workspace = true
 
 [dependencies]
 nalgebra = { workspace = true }
-rand = "0.10.1"
-rand_distr = "0.6.0"
+rand = { workspace = true }
+rand_distr = { workspace = true }
 statrs = { workspace = true }
 
 [dev-dependencies]
 proptest = { workspace = true }
 approx = { workspace = true }
-rerun = "0.33.0"
+rerun = { workspace = true }
