@@ -3,3 +3,5 @@
 # Emacs autosave / lock files
 \#*\#
 .\#*
+# Claude Code local files (kept out of the repo)
+.claude/
