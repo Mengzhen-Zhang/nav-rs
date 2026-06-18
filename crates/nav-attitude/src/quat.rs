@@ -21,7 +21,7 @@
 //! (`from_axis_angle`, `IDENTITY`), and `compose` renormalizes its result.
 
 use approx::{AbsDiffEq, RelativeEq};
-use nalgebra::{Matrix3, Unit, Vector3};
+use nalgebra::{Matrix3, Unit, Vector3, Vector4};
 
 /// A unit quaternion representing a rotation in SO(3).
 ///
@@ -95,6 +95,10 @@ impl UnitQuat {
         let norm = norm_sq.sqrt();
 
         Self([w, x, y, z].map(|n| n / norm))
+    }
+
+    pub fn vector(&self) -> Vector4<f64> {
+        Vector4::from(self.0)
     }
 
     /// Hamilton product `self ⊗ other`.
@@ -233,6 +237,22 @@ impl UnitQuat {
     }
 
     pub fn from_rotvec(v: crate::rotvec::RotVec) -> Self {
+        let theta = v.angle();
+
+        let w = (0.5 * theta).cos();
+        let c = if theta < crate::numerics::SMALL_ANGLE_EPS {
+            let theta_sq = theta * theta;
+            0.5 - theta_sq / 48.0 + theta_sq * theta_sq / 3840.0
+        } else {
+            (0.5 * theta).sin() / theta
+        };
+
+        let u = c * v.to_vector();
+
+        Self([w, u.x, u.y, u.z])
+    }
+
+    pub fn from_rotvec_borrowed(v: &crate::rotvec::RotVec) -> Self {
         let theta = v.angle();
 
         let w = (0.5 * theta).cos();

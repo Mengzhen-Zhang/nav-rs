@@ -24,6 +24,7 @@ use crate::rotvec::RotVec;
 ///
 /// Invariant (by caller contract, not enforced): orthonormal with
 /// determinant +1. All methods assume it; [`Dcm::is_orthonormal`] checks it.
+#[derive(Clone, Copy, Debug)]
 pub struct Dcm(Matrix3<f64>);
 
 impl Dcm {
