@@ -7,8 +7,15 @@ edition = "2024"
 license = "MIT"
 
 [workspace.dependencies]
-nalgebra = "0.35"
+nalgebra = { version = "0.35", features = ["macros"] }
 statrs = { version = "0.18.0" }
 approx = "0.5"
 proptest = "1"
 thiserror = "2"
+nav-kf = {path = "crates/nav-kf"}
+nav-attitude = {path = "crates/nav-attitude"}
+nav-imu = {path = "crates/nav-imu"}
+rand = "0.10.1"
+rand_distr = "0.6.0"
+rerun = "0.33.0"
+derive_more = { version = "2.1.1", features = ["full"] }
