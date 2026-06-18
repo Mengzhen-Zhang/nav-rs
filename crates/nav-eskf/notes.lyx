@@ -1,0 +1,240 @@
+#LyX 2.5 created this file. For more info see https://www.lyx.org/
+\lyxformat 643
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children no
+\language american
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification default
+\crossref_package refstyle
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\backgroundcolor none
+\fontcolor none
+\notefontcolor lightgray
+\boxbgcolor red
+\table_border_color default
+\table_odd_row_color default
+\table_even_row_color default
+\table_alt_row_colors_start 1
+\index Index
+\shortcut idx
+\color #008080
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\docbook_mathml_version 0
+\end_header
+
+\begin_body
+
+\begin_layout Section*
+Covariant derivatives
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x:\mathbb{R}\rightarrow\mathcal{M}$
+\end_inset
+
+,
+ such that 
+\begin_inset Formula $x\left(t\right)$
+\end_inset
+
+ is a trajectory.
+ Assume
+\begin_inset Formula 
+\[
+\frac{dx}{dt}=f\left(x\right).
+\]
+
+\end_inset
+
+Let 
+\begin_inset Formula $V\left(x\right)=v^{i}\left(x\right)\frac{\partial}{\partial_{x^{i}}}$
+\end_inset
+
+ be a vector field on the manifold.
+ Since the manifold is curved in general,
+ we must track the change of the basis 
+\begin_inset Formula $\partial_{x^{i}}$
+\end_inset
+
+.
+ This is given by
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial_{x^{i}}}\frac{\partial}{\partial_{x^{j}}}=\Gamma^{k}_{ij}\frac{\partial}{\partial_{x^{k}}}.
+\]
+
+\end_inset
+
+Now we differentiate 
+\begin_inset Formula $V$
+\end_inset
+
+ along the trajectory 
+\begin_inset Formula $x\left(t\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\frac{dV}{dt}=\frac{d}{dt}\left(v^{i}\partial_{x^{i}}\right)=\frac{dv^{i}}{dt}\frac{\partial}{\partial_{x^{i}}}+v^{i}\frac{d}{dt}\frac{\partial}{\partial_{x^{i}}}.
+\]
+
+\end_inset
+
+Using the equation of motion,
+ we have
+\begin_inset Formula 
+\[
+\frac{dv^{i}}{dt}=\frac{\partial v^{i}}{\partial x^{j}}\frac{dx^{j}}{dt}=\frac{\partial v^{i}}{\partial x^{j}}f^{j}\left(x\right)
+\]
+
+\end_inset
+
+and
+\begin_inset Formula 
+\[
+\frac{d}{dt}\frac{\partial}{\partial x^{i}}=\frac{dx^{j}}{dt}\frac{\partial}{\partial x^{j}}\frac{\partial}{\partial x^{i}}=f^{j}\left(\Gamma^{k}_{ji}\frac{\partial}{\partial x^{k}}\right).
+\]
+
+\end_inset
+
+Then
+\begin_inset Formula 
+\[
+\frac{dV}{dt}=\left(\frac{\partial v^{i}}{\partial x^{j}}f^{j}\right)\frac{\partial}{\partial x^{i}}+v^{i}f^{j}\left(\Gamma^{k}_{ji}\frac{\partial}{\partial x^{k}}\right)
+\]
+
+\end_inset
+
+which is equivalent to
+\begin_inset Formula 
+\[
+\frac{dV}{dt}=\left(\frac{\partial v^{i}}{\partial x^{j}}+v^{k}\Gamma^{i}_{jk}\right)f^{j}\frac{\partial}{\partial x^{i}}:=\nabla_{f}V.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+ESKF
+\end_layout
+
+\begin_layout Standard
+At each step,
+ the kalman filter functions as a Gaussian channel transforming a probabilistic distribution 
+\begin_inset Formula $\mathcal{N}\left(\hat{x}_{t-1},P_{t-1}\right)$
+\end_inset
+
+ to 
+\begin_inset Formula $\mathcal{N}\left(\hat{x}_{t},P_{t}\right)$
+\end_inset
+
+.
+ Geometrically,
+ 
+\begin_inset Formula $\hat{x}_{t-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{x}_{t}$
+\end_inset
+
+ are points on the manifold 
+\begin_inset Formula $\mathcal{M}$
+\end_inset
+
+,
+ and 
+\begin_inset Formula $P_{t-1},P_{t}$
+\end_inset
+
+ are rank-2 tensors,
+ i.e,
+ 
+\begin_inset Formula $P_{t-1}\in T_{\hat{x}_{t-1}}\mathcal{M}$
+\end_inset
+
+ and 
+\begin_inset Formula $P_{t}\in T_{\hat{x}_{t}}\mathcal{M}$
+\end_inset
+
+.
+  
+\end_layout
+
+\end_body
+\end_document
